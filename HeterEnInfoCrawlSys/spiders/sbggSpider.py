@@ -5,7 +5,7 @@ import scrapy
 import re
 
 from datetime import datetime
-from scrapy import Request, FormRequest
+from scrapy import Request
 
 from scrapy_redis.spiders import RedisSpider
 
@@ -21,12 +21,12 @@ class SbggSpider(RedisSpider):
     #             page: 1
     #             rows: 20
     #             annNum: 1580
-    latestTerm=1580
+    latestTerm=1593
     url = 'http://sbgg.saic.gov.cn:9080/tmann/annInfoView/annSearchDG.html'
     header={
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
     }
-    def start_requests(self):#从第1期到latestTerm
+    def start_requests(self):# 从第1期到latestTerm
 
         for annNum in xrange(1085,self.latestTerm+1):
             body = {

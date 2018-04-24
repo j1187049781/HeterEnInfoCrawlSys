@@ -16,7 +16,7 @@ NEWSPIDER_MODULE = 'HeterEnInfoCrawlSys.spiders'
 
 #log的最低级别
 # 可选的级别有: CRITICAL、 ERROR、WARNING、INFO、DEBUG
-LOG_LEVEL='INFO'
+# LOG_LEVEL='INFO'
 
 DUPEFILTER_DEBUG = True
 # 默认: False
@@ -29,7 +29,7 @@ USER_AGENT = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_6) AppleWebKit/604.3.
 ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-# CONCURRENT_REQUESTS = 32
+# CONCURRENT_REQUESTS = 5
 
 # Configure a delay for requests for the same website (default: 0)
 # See http://scrapy.readthedocs.org/en/latest/topics/settings.html#download-delay
@@ -37,7 +37,7 @@ ROBOTSTXT_OBEY = False
 DOWNLOAD_DELAY = 1
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
-CONCURRENT_REQUESTS_PER_IP = 32
+CONCURRENT_REQUESTS_PER_IP = 5
 
 # AUTOTHROTTLE_ENABLED = True
 # 默认: False
@@ -60,7 +60,8 @@ CONCURRENT_REQUESTS_PER_IP = 32
 # 起用AutoThrottle调试(debug)模式，展示每个接收到的response。 您可以通过此来查看限速参数是如何实时被调整的。
 
 # Disable cookies (enabled by default)
-# COOKIES_ENABLED = False
+COOKIES_ENABLED = False
+COOKIES_DEBUG = True
 
 # Disable Telnet Console (enabled by default)
 # TELNETCONSOLE_ENABLED = False
@@ -79,12 +80,13 @@ CONCURRENT_REQUESTS_PER_IP = 32
 
 # Enable or disable downloader middlewares
 # See http://scrapy.readthedocs.org/en/latest/topics/downloader-middleware.html
-# DOWNLOADER_MIDDLEWARES = {
-#     'HeterEnInfoCrawlSys.middlewares.MyCustomDownloaderMiddleware': None,
-#     'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 350,
-#     'scrapy.downloadermiddlewares.retry.RetryMiddleware':500,
-#     'HeterEnInfoCrawlSys.middlewares.ProxyMiddleware': 300,
-# }
+DOWNLOADER_MIDDLEWARES = {
+    'HeterEnInfoCrawlSys.middlewares.MyCustomDownloaderMiddleware': None,
+    'scrapy.downloadermiddlewares.httpproxy.HttpProxyMiddleware': 350,
+    'scrapy.downloadermiddlewares.retry.RetryMiddleware':500,
+    'HeterEnInfoCrawlSys.middlewares.XunDaiLiProxyMiddleware': 300,
+    'HeterEnInfoCrawlSys.middlewares.ABuYunProxyMiddleware': None,
+}
 
 # Enable or disable extensions
 # See http://scrapy.readthedocs.org/en/latest/topics/extensions.html
@@ -121,7 +123,7 @@ ITEM_PIPELINES = {
 # HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 
 # db settings
-DB_URL = 'mongodb://spider:18148411316@123.206.189.171:27017/admin'
+DB_URL = 'mongodb://spider:18148411316@123.206.189.171:27017/spiders'
 # DB_URL = 'mongodb://127.0.0.1:27017/'
 DB_NAME = 'spiders'
 
@@ -206,3 +208,19 @@ REDIS_URL = 'redis://:.loik,mju@120.77.84.4:6379'
 SAME_KEY = False
 #clear redis key of the request duefilter
 CLR_KEY = False
+
+
+# proxyServer setting
+# 讯代理
+orderno = "ZF20184122718l6Zvj1"
+secret = "8de3e616573c494fbce23367b92f5203"
+
+ip = "forward.xdaili.cn"
+port = "80"
+ip_port = ip+':'+port
+
+# 阿布云
+proxyServer = "http://http-dyn.abuyun.com:9020"
+
+proxyUser = "H8Q8QBBJA4095W5D"
+proxyPass = "4B5E1AABEABC85DA"

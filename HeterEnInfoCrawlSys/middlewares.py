@@ -4,12 +4,13 @@
 #
 # See documentation in:
 # http://doc.scrapy.org/en/latest/topics/spider-middleware.html
+import base64
+import hashlib
 import logging
 
-from pymongo import MongoClient
-from scrapy import signals, settings
-
-from HeterEnInfoCrawlSys.util.proxyPoolUtil import ProxyUtil
+import time
+from scrapy import signals
+from settings import proxyPass, proxyServer, proxyUser, orderno, secret, ip_port
 
 
 class HetereninfocrawlsysSpiderMiddleware(object):
@@ -59,18 +60,37 @@ class HetereninfocrawlsysSpiderMiddleware(object):
     def spider_opened(self, spider):
         spider.logger.info('Spider opened: %s' % spider.name)
 
-class ProxyMiddleware(object):
+
+class ABuYunProxyMiddleware(object):
     """cover scrapy's HttpProxyMiddleware.
 
        if 'proxy' in request.meta, HttpProxyMiddleware don't do anything.
 
      """
-    def spider_opened(self, spider):
-        pass
+    proxyAuth = "Basic " + base64.b64encode(proxyUser + ":" + proxyPass)
 
     def process_request(self, request, spider):
-        ProxyUtil.open()
-        proxy=ProxyUtil.getIp()
-        if proxy is not None:
-            request.meta['proxy'] = "https://%s" % proxy
-            logging.info('[ProxyMiddleware] proxy:%s is used', proxy)
+
+
+        request.meta["proxy"] = proxyServer
+        request.headers["Proxy-Authorization"] = self.proxyAuth
+
+
+class XunDaiLiProxyMiddleware(object):
+    """cover scrapy's HttpProxyMiddleware.
+
+       if 'proxy' in request.meta, HttpProxyMiddleware don't do anything.
+
+     """
+
+    def process_request(self, request, spider):
+        timestamp = str(int(time.time()))  # 计算时间戳
+        s = "orderno=" + orderno + "," + "secret=" + secret + "," + "timestamp=" + timestamp
+
+        md5_string = hashlib.md5(s).hexdigest()  # 计算sign
+        sign = md5_string.upper()  # 转换成大写
+        auth = "sign=" + sign + "&" + "orderno=" + orderno + "&" + "timestamp=" + timestamp
+        # proxy = {"http": "http://" + ip_port, "https": "https://" + ip_port}
+
+        request.meta["proxy"] = "http://" + ip_port
+        request.headers["Proxy-Authorization"] = auth
